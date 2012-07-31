@@ -1,0 +1,136 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+ <h:head>
+
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Welcome to JSF Spring MongoDB Project</title>
+ </h:head>
+ <h:body>
+
+         <h:outputLink id="addLink" value="javascript:void(0)" onclick="addDialog.show()" icon="ui-icon-add" title="add">
+             Add
+         </h:outputLink>
+         <br/><br/>
+
+     <h:panelGroup id="padding" layout="block">
+         <h:form id="userForm" prependId="false">
+
+         <p:dataTable id="users" var="user"
+                          value="#{userMB.userList}" style="width: 10%">
+                 <p:column>
+                     <f:facet name="header">
+                         <h:outputText value="ID" />
+                     </f:facet>
+                     <h:outputText value="#{user.id}" />
+                 </p:column>
+                 <p:column>
+                     <f:facet name="header">
+                         <h:outputText value="Adı" />
+                     </f:facet>
+                     <h:outputText value="#{user.firstName}" />
+                 </p:column>
+                 <p:column>
+                     <f:facet name="header">
+                         <h:outputText value="Soyadı" />
+                     </f:facet>
+                     <h:outputText value="#{user.lastName}" />
+                 </p:column>
+                 <p:column>
+                     <f:facet name="header">
+                         <h:outputText value="Telefon" />
+                     </f:facet>
+                     <h:outputText value="#{user.phone}" />
+                 </p:column>
+                 <p:column>
+                     <f:facet name="header">
+                         <h:outputText value="Photo" />
+                     </f:facet>
+                     <p:graphicImage height="50px" value="#{fileMB.getImageFile(user.file)}" />
+                 </p:column>
+<!--
+                 <p:column style="width:40px">
+
+                     <h:panelGrid columns="3" styleClass="actions" cellpadding="2">
+                         <p:commandButton id="selectButton" icon="ui-icon-edit" title="edit">
+                             Edit
+                         </p:commandButton>
+                     </h:panelGrid>
+                 </p:column>
+-->
+             </p:dataTable>
+         </h:form>
+     </h:panelGroup>
+
+
+     <p:dialog widgetVar="addDialog" id="addDialog" header="Yeni kullanıcı">
+         <h:form enctype="multipart/form-data" accept-charset="UTF-8">
+
+             <h:panelGrid columns="2" cellpadding="5">
+
+                 <h:outputLabel for="name" value="Adınız: " />
+                 <p:inputText id="name" value="#{userMB.name}">
+                     <f:validateLength minimum="5" />
+                     <p:ajax event="blur" update="nameMsg" />
+                     <p:message id="nameMsg" for="name" display="icon"/>
+                 </p:inputText>
+
+                 <h:outputLabel for="surname" value="Soyadınız: " />
+                 <p:inputText id="surname" value="#{userMB.surname}" />
+
+                 <h:outputLabel for="phone" value="Telefon" />
+                 <p:inputMask value="#{userMB.phone}" id="phone" mask="(999) 999-9999"/>
+
+                 <h:outputLabel for="fileUpload" value="Seçiniz" />
+                 <p:fileUpload id="fileUpload"
+                               fileUploadListener="#{userMB.handleFileUpload}"
+                               auto="true"
+                               sizeLimit="1000000"
+                               update="photo"
+                               oncomplete="handleFileUpload()"
+                               allowTypes="/(\.|\/)(gif|jpe?g|png)$/"/>
+
+                 <h:outputLabel for="fileNamePanel" value="Profil Fotoğrafı" />
+                 <p:panel id="fileNamePanel" widgetVar="fileNamePanel" style="border:0;">
+
+                     <p:graphicImage id="photo" value="#{fileMB.getImageFile(userMB.fileName)}" width="50px" cache="FALSE"/>
+
+                     <h:outputLabel for="fileNamePanel" value="#{userMB.fileName}"  />
+
+                 </p:panel>
+
+
+                 <f:facet name="footer">
+                     <p:commandButton id="addUser" value="Add"
+                                      actionListener="#{userMB.addUser}"
+                                      update=":padding"
+                                      oncomplete="handleLoginRequest(xhr, status, args)"
+                                      ajax="true"/>
+                 </f:facet>
+
+             </h:panelGrid>
+
+
+         </h:form>
+     </p:dialog>
+
+     <script type="text/javascript">
+         function handleFileUpload()
+         {
+             //$("#fileUploadPanel").hide();
+         }
+
+         function handleLoginRequest(xhr, status, args) {
+
+             if(args.success == true) {
+                 $('#addDialog').hide();
+                 location.reload();
+             }
+         }
+     </script>
+</h:body>
+</html> 

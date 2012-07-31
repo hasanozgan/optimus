@@ -1,3 +1,8 @@
+target
+lib
+optimus.iml
+.idea
+
 *.class
 
 # Package Files #
